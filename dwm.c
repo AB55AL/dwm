@@ -234,6 +234,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static void spawn_term_once(const Arg *arg);
 
 /* variables */
 static const char broken[] = "broken";
@@ -2131,6 +2132,15 @@ zoom(const Arg *arg)
 		if (!c || !(c = nexttiled(c->next)))
 			return;
 	pop(c);
+}
+
+void
+spawn_term_once(const Arg *arg) {
+  for (Client *c = selmon->clients; c != NULL; c = c->next)
+    if (strcmp(c->name, "st") == 0)
+      return;
+
+  spawn(arg);
 }
 
 int
