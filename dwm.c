@@ -2142,9 +2142,12 @@ zoom(const Arg *arg)
 
 void
 spawn_term_once(const Arg *arg) {
-  for (Client *c = selmon->clients; c != NULL; c = c->next)
-    if (strcmp(c->name, "st") == 0)
-      return;
+	for (Client *c = selmon->clients; c != NULL; c = c->next)
+		if (strcmp(c->name, "st") == 0)
+			return;
+
+	spawn(arg);
+}
 
 void
 maximize(int x, int y, int w, int h) {
