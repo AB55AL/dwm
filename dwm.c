@@ -2101,6 +2101,16 @@ view(const Arg *arg)
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
 	focus(NULL);
 	arrange(selmon);
+
+	// On tag 5 turn off
+	Arg a;
+	if ((arg->ui & TAGMASK) == (1 << 4)) {
+		a.v = disable_redshift;
+		spawn(&a);
+	} else {
+		a.v = enable_redshift;
+		spawn(&a);
+	}
 }
 
 Client *
