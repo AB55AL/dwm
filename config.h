@@ -95,6 +95,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_h,      focusmon,       {.i  = -1 } },
 	{ MODKEY,                       XK_o,      tagmon,         {.i  = -1 } }, // Move window to next monitor
 	{ MODKEY,												XK_m,      togglefullscr,  {0} },
+	{ MODKEY,												XK_a,      focusmaster,    {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
