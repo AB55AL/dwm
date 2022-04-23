@@ -57,6 +57,9 @@
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
+// constants
+#define LAYOUTS_LENGTH 3
+
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum { SchemeNorm, SchemeSel }; /* color schemes */
@@ -130,7 +133,7 @@ struct Monitor {
 	Client *stack;
 	Monitor *next;
 	Window barwin;
-	const Layout *lt[2];
+	const Layout *lt[LAYOUTS_LENGTH];
 };
 
 typedef struct {
@@ -239,6 +242,7 @@ static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static void spawn_term_once(const Arg *arg);
+static void half_tile(Monitor *m);
 
 /* variables */
 static const char broken[] = "broken";
@@ -664,8 +668,8 @@ createmon(void)
 	m->showbar = showbar;
 	m->topbar = topbar;
 	m->gappx = gappx;
-	m->lt[0] = &layouts[0];
-	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+	for (int i = 0; i < LENGTH(layouts); i++)
+		m->lt[i] = &layouts[i];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	return m;
 }
@@ -1545,7 +1549,7 @@ void
 setlayout(const Arg *arg)
 {
 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
-		selmon->sellt ^= 1;
+		selmon->sellt = (selmon->sellt + 1) % LAYOUTS_LENGTH; // Cycle layouts
 	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = (Layout *)arg->v;
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
@@ -1740,6 +1744,35 @@ tile(Monitor *m)
 			if (ty + HEIGHT(c) + m->gappx < m->wh)
 				ty += HEIGHT(c) + m->gappx;
 		}
+}
+
+void
+half_tile(Monitor *m)
+{
+	unsigned int i, number_of_clients, height, master_width, my, ty;
+	Client *c;
+
+	for (number_of_clients = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), number_of_clients++);
+	if (number_of_clients == 0)
+		return;
+
+	if (number_of_clients > m->nmaster)
+		master_width = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		master_width = m->ww - m->gappx;
+
+	for (i = 0, my = ty = m->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if (i < m->nmaster) { // Tile masters
+			height = (m->wh - my) / (MIN(number_of_clients, m->nmaster) - i) - m->gappx;
+			resize(c, m->wx + m->gappx, m->wy + my, master_width - (2*c->bw) - m->gappx, height - (2*c->bw), 0);
+			if (my + HEIGHT(c) + m->gappx < m->wh)
+				my += HEIGHT(c) + m->gappx;
+		} else { // Tile slaves
+			height = (m->wh - ty) - m->gappx;
+			resize(c, m->wx + master_width + m->gappx, m->wy + ty, m->ww - master_width - (2*c->bw) - 2*m->gappx, height - (2*c->bw), 0);
+			if (ty + HEIGHT(c) + m->gappx < m->wh)
+				ty += HEIGHT(c) + m->gappx;
+	}
 }
 
 void

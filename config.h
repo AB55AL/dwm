@@ -42,10 +42,12 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 static const int attachbelow = 1;    /* 1 means attach after the currently active window */
 
-static const Layout layouts[] = {
+static const Layout layouts[LAYOUTS_LENGTH] = {
+	/* first entry is default */
 	/* symbol     arrange function */
-	{ "Tile",      tile },    /* first entry is default */
-	{ "Max",      monocle },
+	{ "Half",      half_tile },
+	{ "Max",       monocle   },
+	{ "Tile",      tile		   },    
 	// { "Float",      NULL },    /* no layout function means floating behavior */
 };
 
