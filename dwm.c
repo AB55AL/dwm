@@ -2237,6 +2237,31 @@ view(const Arg *arg)
 	focus(NULL);
 	arrange(selmon);
 
+	char *tag = "";
+
+	switch (arg->ui) {
+		case 1 << 0:
+			tag = "#dwm-tags.hook.1";
+			break;
+		case 1 << 1:
+			tag = "#dwm-tags.hook.2";
+			break;
+		case 1 << 2:
+			tag = "#dwm-tags.hook.3";
+			break;
+		case 1 << 3:
+			tag = "#dwm-tags.hook.4";
+			break;
+		case 1 << 4:
+			tag = "#dwm-tags.hook.5";
+			break;
+	}
+
+	char *update_bar_tag[] = { "polybar-msg", "action", tag, NULL };
+	Arg t;
+	t.v = update_bar_tag;
+	spawn(&t);
+
 	// On tag 5 turn off
 	Arg a;
 	if ((arg->ui & TAGMASK) == (1 << 4)) {

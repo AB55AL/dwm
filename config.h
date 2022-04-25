@@ -9,7 +9,7 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int usealtbar          = 1;        /* 1 means use non-dwm status bar */
 static const char *altbarclass      = "Polybar"; /* Alternate bar class name */
-static const char *altbarcmd        = "$HOME/.config/polybar/start-polybar.sh"; /* Alternate bar launch command */
+static const char *altbarcmd        = "$HOME/.config/polybar/start-polybar.sh 2> /dev/null &"; /* Alternate bar launch command */
 static const char *fonts[]          = { "SourceCodePro:size=8", "monospace:size=10" };
 static const char dmenufont[]       = "SourceCodePro:size=8";
 static const char col_gray1[]       = "#222222";
