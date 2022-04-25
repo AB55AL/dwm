@@ -22,6 +22,7 @@
  */
 #include <errno.h>
 #include <locale.h>
+#include <math.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -2237,30 +2238,16 @@ view(const Arg *arg)
 	focus(NULL);
 	arrange(selmon);
 
-	char *tag = "";
+	int tag_number = log2(arg->ui) + 1;
+	if ( tag_number < 10) {
+		char tag[2];
+		snprintf( tag, 2, "%d", tag_number );
 
-	switch (arg->ui) {
-		case 1 << 0:
-			tag = "#dwm-tags.hook.1";
-			break;
-		case 1 << 1:
-			tag = "#dwm-tags.hook.2";
-			break;
-		case 1 << 2:
-			tag = "#dwm-tags.hook.3";
-			break;
-		case 1 << 3:
-			tag = "#dwm-tags.hook.4";
-			break;
-		case 1 << 4:
-			tag = "#dwm-tags.hook.5";
-			break;
+		char *update_bar_tag[] = { "polybar-msg", "action", "dwm-tags", "hook", tag, NULL };
+		Arg t;
+		t.v = update_bar_tag;
+		spawn(&t);
 	}
-
-	char *update_bar_tag[] = { "polybar-msg", "action", tag, NULL };
-	Arg t;
-	t.v = update_bar_tag;
-	spawn(&t);
 
 	// On tag 5 turn off
 	Arg a;
