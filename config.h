@@ -36,6 +36,7 @@ static const Rule rules[] = {
 	{ "Firefox",      NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "steam_app_0",  NULL,       NULL,       1 << 4,       1,            0 },
 	{ "steam_app",    NULL,       NULL,       1 << 4,       1,            0 },
+	{ "looking-glass-client",     NULL,       NULL,         1 << 4,       0,            0 },
 };
 
 /* layout(s) */
